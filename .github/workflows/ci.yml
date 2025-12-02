@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java Env
+        uses: actions/setup-java@v4
+        with: { java-version: '21' }
+      - name: Build Java API
+        run: cd java-api && mvn clean install
+      - name: Test Java
+        run: cd java-api && mvn test
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install Python deps
+        run: cd python-app && pip install -r requirements.txt
+      - name: Test Python
+        run: cd python-app && pytest tests/
+      - name: E2E Tests
+        run: cd playwright-tests && npm ci && npx playwright test
+
+#  deploy:
+#    if: github.ref == 'refs/heads/main'
+#    needs: build-test
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Build Docker images
+#        run: docker-compose build
+#      - name: Push to repo
+#        run: docker push your-repo/image
