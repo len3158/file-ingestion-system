@@ -1,4 +1,4 @@
-// playwright-tests/tests/e2e.spec.js
+// e2e-tests/tests/e2e.spec.js
 import { test, expect } from '@playwright/test';
 import playwrightConfig from "../playwright.config";
 

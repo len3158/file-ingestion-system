@@ -1,4 +1,4 @@
-// playwright-tests/playwright.config.js
+// e2e-tests/playwright.config.js
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
