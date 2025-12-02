@@ -1,34 +1,46 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Ingestion UI</title>
-    <style> table { border-collapse: collapse; } th, td { border: 1px solid #ddd; padding: 8px; } </style>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js"></script>
 </head>
 <body>
-<h1>File Metadata</h1>
-<table id="metadataTable">
-    <thead><tr><th>Filename</th><th>Size</th><th>SHA256</th><th>Status</th><th>Reason</th><th>Path</th><th>Actions</th></tr></thead>
-    <tbody></tbody>
-</table>
-<button onclick="fetchMetadata()">Refresh</button>
-<script>
-    async function fetchMetadata() {
-        const response = await fetch('http://localhost:8080/api/files');
-        const data = await response.json();
-        const tbody = document.querySelector('#metadataTable tbody');
-        tbody.innerHTML = '';
-        data.forEach(item => {
-            const row = `<tr><td>${item.filename}</td><td>${item.size}</td><td>${item.sha256}</td><td>${item.status}</td><td>${item.reason || ''}</td><td>${item.path}</td><td><button onclick="retryFile('${item.filename}')">Retry</button></td></tr>`;
-            tbody.innerHTML += row;
-        });
-    }
-    async function retryFile(filename) {
-        await fetch(`http://localhost:8080/api/retry/${filename}`, { method: 'POST' });
-        alert('Retry triggered');
-        await fetchMetadata();
-    }
-    fetchMetadata();
-</script>
+<div class="container">
+    <div class="header">
+        <h1>📁 File Metadata Dashboard</h1>
+        <button class="refresh-btn" onclick="fetchMetadata()">🔄 Refresh</button>
+    </div>
+    <div class="table-container">
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading files...</p>
+        </div>
+        <table id="metadataTable" style="display: none;">
+            <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Size</th>
+                <th>SHA256</th>
+                <th>Status</th>
+                <th>Reason</th>
+                <th>Path</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3>No files found</h3>
+            <p>Upload some files to get started</p>
+        </div>
+    </div>
+</div>
 </body>
 </html>
