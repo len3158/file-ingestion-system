@@ -18,6 +18,13 @@ A **full-stack file ingestion project** built for learning and testing, comprisi
 
 This project demonstrates a **multi-language, containerized, test-driven application** setup.
 
+To launch the app, run the following command from the root of the project : 
+``
+npx serve ui
+``
+
+The application should be served locally at `http://localhost:3000`.
+
 * * * * *
 
 **Table of Contents**
