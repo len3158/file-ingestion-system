@@ -8,8 +8,22 @@ function formatBytes(bytes) {
 
 function getStatusClass(status) {
     const statusLower = status.toLowerCase();
-    if (statusLower.includes('success') || statusLower === 'completed') return 'status-success';
-    if (statusLower.includes('error') || statusLower === 'failed') return 'status-error';
+
+    if (statusLower.includes('success') ||
+        statusLower.includes('completed') ||
+        statusLower.includes('processed') ||
+        statusLower === 'done' ||
+        statusLower === 'ok') {
+        return 'status-success';
+    }
+
+    if (statusLower.includes('error') ||
+        statusLower.includes('failed') ||
+        statusLower.includes('failure') ||
+        statusLower.includes('rejected')) {
+        return 'status-error';
+    }
+
     return 'status-pending';
 }
 
