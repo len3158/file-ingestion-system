@@ -1,3 +1,4 @@
+# Simple file workflow to demonstrate github CI capabilities with the application
 name: CI
 
 on:
@@ -8,36 +9,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
   build-test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Java Env
+      - name: Set up Java 21
         uses: actions/setup-java@v4
-        with: { java-version: '21' }
-      - name: Build Java API
-        run: cd java-api && mvn clean install
-      - name: Test Java
-        run: cd java-api && mvn test
-      - name: Set up Python
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+      - name: Build and Test Java API
+        working-directory: java-api
+        run: |
+          mvn -B clean install
+          mvn test
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
-        with: { python-version: '3.12' }
-      - name: Install Python deps
-        run: cd python-app && pip install -r requirements.txt
-      - name: Test Python
-        run: cd python-app && pytest tests/
-      - name: E2E Tests
-        run: cd playwright-tests && npm ci && npx playwright test
-
-#  deploy:
-#    if: github.ref == 'refs/heads/main'
-#    needs: build-test
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Build Docker images
-#        run: docker-compose build
-#      - name: Push to repo
-#        run: docker push your-repo/image
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'python-app/requirements.txt'
+      - name: Install Python dependencies
+        working-directory: python-app
+        run: pip install -r requirements.txt
+      - name: Test Python app
+        working-directory: python-app
+        run: pytest tests/
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'playwright-tests/package-lock.json'
+      - name: Install Playwright dependencies
+        working-directory: playwright-tests
+        run: |
+          npm ci
+          npx playwright install --with-deps
+      - name: Run E2E tests
+        working-directory: playwright-tests
+        run: npx playwright test
