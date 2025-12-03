@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  java-api:
+    build: ./java-api
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./python-app:/app/python-app  # Share metadata
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+  python-ingest:
+    build: ./python-app
+    command: ./ingest.sh  # Or cron for periodic
+    volumes:
+      - ./python-app:/app/python-app
