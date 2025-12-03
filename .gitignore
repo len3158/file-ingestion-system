@@ -64,6 +64,12 @@ test-results/
 *.tar.gz
 *.rar
 
+# Miscellaneous
+python-app/lib/*
+python-app/bin/*
+java-api/target/*
+python-app/pyvenv.cfg
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
